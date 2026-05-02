@@ -19,21 +19,13 @@ description: 围绕一个主题进行多轮讲解、讨论时使用。
 假设一个主题的知识结构如下：
 ```
 topic S
-|
-|--subtopic A
-| |
-| |--subtopic A1
-| | |
-| | |--subtopic A1.1
-| | |
-| | |--subtopic A1.2
-| |
-| |--subtopic A2
-|
-|--subtopic B
-|
-|--subtopic C
-
+├── subtopic A
+│   ├── subtopic A1
+│   │   ├── subtopic A1.1
+│   │   └── subtopic A1.2
+│   └── subtopic A2
+├── subtopic B
+└── subtopic C
 ```
 
 那么对应的md文档的名字得是跟topic S相关的，然后其内容结构应当如下：
@@ -98,4 +90,3 @@ topic S
 
 如果用户反馈说难以理解，那么通常推荐讲解一下“这个知识的再往下一层的知识”，比如用户难以理解关于前端的某一个知识，那么就要讲一下相关的浏览器的知识。
 </teaching>
-
