@@ -1,41 +1,41 @@
 ---
 name: structured-knowledge
-description: 跟用户围绕一个主题进行多轮讲解（学习）、讨论时使用。
+description: Use when the user is learning one topic across multiple turns; maintain the conversation output as structured Markdown knowledge documents instead of chronological Q&A notes.
 ---
 
-# 概述
+# Overview
 
-**目标：让用户在学习同一主题时，获得更好的知识组织体验**
+**Goal: help the user get a better knowledge-organization experience when learning one subject over time.**
 
-**本文档描述的是启发式规则，没有穷尽所有应当做或者不做的事。实际执行时，应优先判断怎样做最有利于实现上面的目标。如果某个做法虽然没有被明确写入本文档，但明显有助于组织知识，可以主动采用；如果某条具体规则在当前场景下反而妨碍理解，也可以调整。**
+**This document contains heuristics, not an exhaustive checklist. In practice, prioritize whatever best serves the goal above. If an approach is not explicitly listed here but clearly improves knowledge organization, use it. If a specific rule gets in the way of understanding in the current situation, adjust it.**
 
-# 读者模型
+# Reader Model
 
-先根据已有对话和文档内容建立一个读者模型。不要用“初学者 / 中级 / 高级”这种粗标签，而要写成前置知识判断：
+First build a reader model from the existing conversation and document content. This is not a coarse "beginner / intermediate / advanced" label. A reader model means judging:
 
-- 读者大概率已经理解什么？
-- 读者可能还不稳定地理解什么？
-- 读者完全没接触过什么？
+- What does the user probably already understand?
+- What might the user understand only unstably?
+- What has the user probably never encountered?
 
-如果这些判断会显著影响讲法，并且无法从上下文推断，先问用户；否则先做保守假设，按读者更容易卡住的水平来写。
+If these judgments would significantly change the explanation and cannot be inferred from context, ask the user first. Otherwise, make a conservative assumption and write for the level where the reader is more likely to get stuck.
 
-# 文档组织
+# Document Organization
 
-结构优先于时间顺序。
+Structure comes before chronology.
 
-当用户围绕一个主题反复追问、比较、纠错、扩展时，你要维护一份结构化的 Markdown 文档，而不是按时间顺序追加聊天记录。不要因为一个问题在时间线上出现得晚，就把它追加到文档末尾；它在结构上属于哪里，就放到哪里。避免多个概念堆在同一节。
+When the user repeatedly asks, compares, corrects, or extends one topic, maintain a structured Markdown document instead of appending a chronological chat log. Do not append a question to the end of the document just because it appeared late in time. Put it where it belongs structurally. Avoid mixing several concepts in the same section.
 
-## 文档级结构
+## Document-Level Structure
 
-要用 Markdown 标题语法表达知识结构。
+Use Markdown headings to express the knowledge structure.
 
-标题通常不建议写用户的提问，而是写知识对象或决策点。
+Headings should usually name knowledge objects or decision points, not the user's questions.
 
-如果能通过补充知识对象来回答用户的问题，就没有必要专门写一个“问题与回答”小节。只有当用户的问题本身是在比较、澄清误解、处理边界条件，且不适合直接并入某个知识对象时，才创建问答小节
+If adding or improving a knowledge object can answer the user's question, there is no need to create a dedicated "question and answer" section. Create a Q&A section only when the question itself compares concepts, clarifies a misconception, or handles boundary conditions that do not fit cleanly inside one knowledge object.
 
-假设一个主题的知识结构如下：
+Suppose a topic has this structure:
 
-```
+```text
 topic S
 ├── subtopic A
 │   ├── subtopic A1
@@ -46,9 +46,9 @@ topic S
 └── subtopic C
 ```
 
-那么对应的 Markdown 文档名应当和 `topic S` 相关，内容结构应当如下：
+Then the Markdown file should be named after `topic S`, and its content should be structured like this:
 
-```
+```markdown
 # subtopic A
 ## subtopic A1
 ### subtopic A1.1
@@ -58,69 +58,69 @@ topic S
 # subtopic C
 ```
 
-如果讨论引出了另一个较大的主题，且它不隶属于当前主题，应创建或维护另一个文档，并在当前文档中引用。引用应放在引出这个主题的位置。
+If the discussion introduces another large topic that does not belong under the current topic, create or maintain another document and reference it from the current document. Put the reference where the other topic is introduced.
 
-## 小节级写法
+## Section-Level Writing
 
-用 Minto 金字塔方法写小节：先给结论或判断，再展开原因、结构和细节。
+Write sections with the Minto Pyramid Principle: start with the conclusion or judgment, then expand into reasons, structure, and details.
 
-写解释性内容时，优先回答“为什么要这样设计 / 为什么需要这个东西”，再介绍“它由哪些部分组成 / 每个部分做什么”。用户通常不是卡在名词定义上，而是卡在“为什么这里需要它、如果没有它会怎样、它在解决什么问题”。
+For explanatory content, prefer answering "why is this designed this way / why is this needed?" before explaining "what parts does it contain / what does each part do?" Users are often not stuck on the dictionary definition of a term. They are usually stuck on why the thing is needed, what would break without it, and what problem it solves.
 
-比如讲火箭结构时，不要一上来平铺“燃料箱、发动机、整流罩、控制系统分别是什么”。更好的顺序是：
-
-```text
-火箭要把载荷送入轨道
-├── 必须产生足够推力，所以需要发动机
-├── 必须持续供给推进剂，所以需要燃料箱
-├── 必须保护载荷穿过大气层，所以需要整流罩
-└── 必须保持姿态和轨迹，所以需要控制系统
-```
-
-也就是说，组件说明应当服务于“为什么需要这些组件”这条主线，而不是把组件功能孤立罗列出来。
-
-提供一个最简单版本的例子会有助于用户理解。类比也是很好的教学工具。
-
-如果用户仍然难以理解，不要只重复当前层解释；要判断他缺少的是不是前置模型。如果是，就补充当前知识所依赖的下一层机制。
-
-这里要和“先解释为什么”区分开：
-
-- “先解释为什么”是当前主题内部的组织顺序。
-- “补前置模型”是当前主题讲不通时，下钻到它依赖的底层机制。
-
-例如讲 React 的 `useEffect`：
+For example, when explaining rocket structure, do not start by listing fuel tanks, engines, fairings, and control systems as isolated parts. A better order is:
 
 ```text
-当前主题内部的为什么：
-组件渲染只应该计算 UI
-└── 但有些事情要和外部系统同步
-    └── 所以需要 useEffect
-
-用户仍然卡住时补前置模型：
-浏览器渲染、React render、commit、异步副作用不是同一件事
+A rocket needs to deliver a payload into orbit
+├── it must generate enough thrust, so it needs engines
+├── it must continuously supply propellant, so it needs tanks
+├── it must protect the payload through the atmosphere, so it needs a fairing
+└── it must maintain attitude and trajectory, so it needs a control system
 ```
 
-## 局部层级
+In other words, component descriptions should serve the main line of "why these components are needed" instead of being listed in isolation.
 
-如果在一节内容里还想表达知识层级，但觉得使用 Markdown 标题会太重，可以用 bullet point 表达：
+A minimal example often helps understanding. Analogies are also useful teaching tools.
 
+If the user still has difficulty understanding, do not merely repeat the current-level explanation. Judge whether the user is missing prerequisite knowledge. If so, explain the lower-level mechanism that the current topic depends on.
+
+Distinguish this from "explain why first":
+
+- "Explain why first" is the organization order inside the current topic.
+- "Add prerequisite knowledge" means drilling down into a lower-level mechanism when the current topic cannot be understood yet.
+
+For example, when explaining React's `useEffect`:
+
+```text
+Why inside the current topic:
+component rendering should only calculate UI
+└── but some work must synchronize with external systems
+    └── so useEffect is needed
+
+Prerequisite model if the user is still stuck:
+browser rendering, React render, commit, and asynchronous side effects are not the same thing
 ```
+
+## Local Hierarchy
+
+If a section needs to express hierarchy but Markdown headings feel too heavy, use bullet points:
+
+```markdown
 - content 1
   - subcontent 1.1
     - subcontent 1.1.1
   - subcontent 1.2
 ```
 
-如果想在一节内容内部做轻量划分，但觉得使用 Markdown 标题会太重，可以用 `---` 分隔。
+If a section needs lightweight internal separation but Markdown headings feel too heavy, use `---`.
 
-## 问答小节
+## Q&A Sections
 
-问答小节要放在它所比较或讨论的对象的最近共同父级下，并且和这些对象保持同级。
+A Q&A section should be placed under the nearest common parent of the concepts being compared or discussed, and it should remain at the same level as those concepts.
 
-如果用户问的是 `subtopic A1.1` 和 `subtopic A1.2` 的区别，那么 `Q&A about A1.1 & A1.2` 应该放在它们的共同父级 `subtopic A1` 下。
+If the user asks about the difference between `subtopic A1.1` and `subtopic A1.2`, then `Q&A about A1.1 & A1.2` belongs under their common parent `subtopic A1`.
 
-如果用户问的是 `subtopic A` 和 `subtopic B` 的区别，那么 `Q&A about A & B` 应该放在 `A` 和 `B` 的共同父级 `topic S`（整个文档的主题）下。
+If the user asks about the difference between `subtopic A` and `subtopic B`, then `Q&A about A & B` belongs under the common parent of `A` and `B`, which is the whole document topic `topic S`.
 
-对应结构示例：
+Example structure:
 
 ```markdown
 # subtopic A
@@ -134,28 +134,28 @@ topic S
 # subtopic C
 ```
 
-# 可读性修复
+# Readability Repairs
 
-如果文档一开始就按“为什么 -> 怎么做 -> 细节”的顺序展开，很多读者疑问会自然被前文解掉，不需要额外补交叉引用。
+If the document already unfolds in the order "why -> how -> details", many reader questions will be resolved naturally by earlier context, without extra cross-references.
 
-交叉引用是补救机制：当结构本身合理，但读者从某处读过去会断，才需要补引用。
+Cross-references are a repair mechanism: add them when the structure is basically right, but a reader may lose context while moving through the document.
 
-处理顺序如下：
+Use this decision flow:
 
 ```text
-用户在 A 处产生疑惑
-├── 如果 A 本身表达顺序有问题
-│   └── 优先改写 A，让它先交代动机或边界
-├── 如果答案应该结构上放在 B
-│   └── 把答案放到 B，并在 A 处补简短引用
-└── 如果答案已经存在于 B
-    └── 不重复写一遍，在 A 处补引用即可
+The user gets confused at A
+├── if A itself is ordered poorly
+│   └── rewrite A so it explains motivation or boundaries first
+├── if the answer structurally belongs in B
+│   └── put the answer in B and add a short reference from A
+└── if the answer already exists in B
+    └── do not duplicate it; add a reference from A
 ```
 
-补引用时要检查原句本身是否容易误导。如果原句的表达顺序让读者先看到“做什么”，但暂时不知道“为什么要这么做”，优先改写原句，让它先交代动机，这样可能已经讲清楚了，不需要再补引用。
+When adding a reference, also check whether the original sentence is misleading. If the sentence shows "what to do" before the reader has enough context for "why", first rewrite the sentence so it explains the motivation. That may already solve the problem without a reference.
 
-# 协作约定
+# Collaboration Rules
 
-用户通常是在编辑器里面查看 Markdown 文档，有折叠某个 Markdown 块的功能，所以你不需要担心内容太长影响阅读的问题，用户不想读的时候可以折叠。
+The user is usually reading Markdown files in an editor that can fold sections, so do not worry too much about document length. If the user does not want to read a section, they can fold it.
 
-为了更加方便地显示出你做了哪些改动，在你改动后先不要 commit，这样用户能在编辑器里看出你改了哪里。正要改下一版的时候，先 commit，然后再开始改。
+To make changes easy to review, do not commit immediately after editing. Leave the changes visible in the working tree. Before starting the next revision, commit the current version first, then continue.
